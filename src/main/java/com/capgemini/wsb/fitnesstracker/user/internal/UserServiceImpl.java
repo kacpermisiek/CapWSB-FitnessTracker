@@ -23,12 +23,17 @@ class UserServiceImpl implements UserService, UserProvider {
         if (user.getId() != null) {
             throw new IllegalArgumentException("User has already DB ID, update is not permitted!");
         }
+        throw new org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException("User already exists");
         return userRepository.save(user);
     }
 
     @Override
-    public Optional<User> getUser(final Long userId) {
-        return userRepository.findById(userId);
+    public Optional<User> getUser(final Long userId) throws {
+        try{
+            return userRepository.findById(userId);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("User not found");
+        }
     }
 
     @Override
