@@ -29,7 +29,7 @@ class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(Long userId) throws IllegalArgumentException{
         log.info("Deleting User with ID {}", userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
@@ -63,14 +63,24 @@ class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findOlderThan(age);
     }
 
-    @Override
-    public void setEmail(Long userId, String email) throws IllegalArgumentException{
-        log.info("Updating email of User with ID {}", userId);
+    public void patchUser(Long userId,  UserPatchDto userPatch) throws IllegalArgumentException{
+        log.info("Patching User with ID {}", userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("User not found");
         }
-        user.get().setEmail(email);
+        if (userPatch.firstName() != null) {
+            user.get().setFirstName(userPatch.firstName());
+        }
+        if (userPatch.lastName() != null) {
+            user.get().setLastName(userPatch.lastName());
+        }
+        if (userPatch.birthdate() != null) {
+            user.get().setBirthdate(userPatch.birthdate());
+        }
+        if (userPatch.email() != null) {
+            user.get().setEmail(userPatch.email());
+        }
         userRepository.save(user.get());
     }
 

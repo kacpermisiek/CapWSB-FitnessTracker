@@ -27,9 +27,10 @@ record UserEmailDto(String email) {
 }
 
 record UserPatchDto(
-        @Nullable Long Id,
         @Nullable String firstName,
         @Nullable String lastName,
         @Nullable @JsonFormat(pattern = "yyyy-MM-dd") LocalDate birthdate,
-        @Nullable String email) {
+        @Nullable String email
+)
+{
 }

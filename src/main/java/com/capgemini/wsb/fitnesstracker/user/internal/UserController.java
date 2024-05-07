@@ -51,9 +51,10 @@ class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<User> addUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         try {
-            return new ResponseEntity<>(userService.createUser(userMapper.toEntity(userDto)), HttpStatus.CREATED);
+            User newUser = userService.createUser(userMapper.toEntity(userDto));
+            return new ResponseEntity<>(userMapper.toDto(newUser), HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -88,10 +89,10 @@ class UserController {
                           .toList();
     }
 
-    @PostMapping("/{userId}/updateEmail")
-    public ResponseEntity<Void> updateUserEmail(@PathVariable Long userId, @RequestBody UserEmailDto emailDto) {
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Void> patchUser(@PathVariable Long userId, @RequestBody UserPatchDto userPatchDto) {
         try {
-            userService.setEmail(userId, emailDto.email());
+            userService.patchUser(userId, userPatchDto);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

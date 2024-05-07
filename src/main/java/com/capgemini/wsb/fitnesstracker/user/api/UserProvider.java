@@ -39,14 +39,4 @@ public interface UserProvider {
      */
     List<User> finUsersOlderThan(int age);
 
-
-    /**
-     * Updates the email of the user with given ID.
-     *
-     * @param userId The ID of the user to be updated
-     * @param email The new email of the user
-     * @return The updated user
-     */
-    void setEmail(Long userId, String email);
-
 }
