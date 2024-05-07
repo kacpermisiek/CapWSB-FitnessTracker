@@ -63,4 +63,15 @@ class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findOlderThan(age);
     }
 
+    @Override
+    public void setEmail(Long userId, String email) throws IllegalArgumentException{
+        log.info("Updating email of User with ID {}", userId);
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        user.get().setEmail(email);
+        userRepository.save(user.get());
+    }
+
 }

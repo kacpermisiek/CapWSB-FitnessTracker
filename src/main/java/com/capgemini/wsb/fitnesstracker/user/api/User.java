@@ -1,17 +1,17 @@
 package com.capgemini.wsb.fitnesstracker.user.api;
 
+import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class User {
@@ -32,6 +32,10 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private List<Training> trainings;
 
     public User(
             final String firstName,

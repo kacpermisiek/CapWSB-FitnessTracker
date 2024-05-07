@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for managing users.
@@ -40,10 +42,12 @@ class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUser(@PathVariable Long userId) {
-        return userService.getUser(userId)
-                          .map(userMapper::toDto)
-                          .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public ResponseEntity<UserDto> getUser(@PathVariable Long userId) {
+        Optional<User> user = userService.getUser(userId);
+        if (user.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        return new ResponseEntity<>(userMapper.toDto(user.get()), HttpStatus.OK);
     }
 
     @PostMapping()
@@ -60,7 +64,10 @@ class UserController {
         try {
             userService.deleteUser(userId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+        catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -73,11 +80,25 @@ class UserController {
                           .toList();
     }
 
-    @GetMapping("/olderThan/{age}")
+    @GetMapping("/older/{age}")
     public List<UserDto> getUsersOlderThan(@PathVariable int age) {
         return userService.finUsersOlderThan(age)
                           .stream()
                           .map(userMapper::toDto)
                           .toList();
     }
+
+    @PostMapping("/{userId}/updateEmail")
+    public ResponseEntity<Void> updateUserEmail(@PathVariable Long userId, @RequestBody UserEmailDto emailDto) {
+        try {
+            userService.setEmail(userId, emailDto.email());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
 }
