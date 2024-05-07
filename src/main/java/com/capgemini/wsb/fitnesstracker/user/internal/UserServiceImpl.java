@@ -1,10 +1,12 @@
 package com.capgemini.wsb.fitnesstracker.user.internal;
 
+import com.capgemini.wsb.fitnesstracker.training.internal.TrainingServiceImpl;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import com.capgemini.wsb.fitnesstracker.user.api.UserProvider;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,12 +25,22 @@ class UserServiceImpl implements UserService, UserProvider {
         if (user.getId() != null) {
             throw new IllegalArgumentException("User has already DB ID, update is not permitted!");
         }
-        throw new org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException("User already exists");
         return userRepository.save(user);
     }
 
     @Override
-    public Optional<User> getUser(final Long userId) throws {
+    public void deleteUser(Long userId) {
+        log.info("Deleting User with ID {}", userId);
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        userRepository.deleteById(userId);
+    }
+
+    @Override
+    public Optional<User> getUser(final Long userId) throws IllegalArgumentException{
         try{
             return userRepository.findById(userId);
         } catch (Exception e) {
@@ -37,13 +49,18 @@ class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
-    public Optional<User> getUserByEmail(final String email) {
-        return userRepository.findByEmail(email);
+    public List<User> getUserByEmail(final String email) {
+        return userRepository.findByEmailContains(email);
     }
 
     @Override
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> finUsersOlderThan(int age) {
+        return userRepository.findOlderThan(age);
     }
 
 }

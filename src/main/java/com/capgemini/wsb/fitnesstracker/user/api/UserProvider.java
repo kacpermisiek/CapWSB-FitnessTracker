@@ -21,13 +21,22 @@ public interface UserProvider {
      * @param email The email of the user to be searched
      * @return An {@link Optional} containing the located user, or {@link Optional#empty()} if not found
      */
-    Optional<User> getUserByEmail(String email);
+    List<User> getUserByEmail(String email);
 
     /**
      * Retrieves all users.
      *
-     * @return An {@link Optional} containing the all users,
+     * @return A List containing the all users,
      */
     List<User> findAllUsers();
+
+
+    /**
+     * Retrieves all users older than given age.
+     *
+     * @param age The age of the user to be searched
+     * @return List of users older than given age
+     */
+    List<User> finUsersOlderThan(int age);
 
 }

@@ -5,12 +5,19 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-record UserDto(@Nullable Long Id, String firstName, String lastName,
-               @JsonFormat(pattern = "yyyy-MM-dd") LocalDate birthdate,
-               String email) {
+record UserDto(
+        @Nullable Long Id,
+        String firstName,
+        String lastName,
+        @JsonFormat(pattern = "yyyy-MM-dd") LocalDate birthdate, String email)
+{
 
 }
 
 record UserIdAndNameDto(@Nullable Long Id, String firstName, String lastName) {
 
+}
+
+
+record UserIdAndEmailDto(@Nullable Long Id, String email) {
 }

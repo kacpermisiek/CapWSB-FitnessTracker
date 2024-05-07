@@ -26,13 +26,13 @@ Stworzone API powinno pozwalać na:
 - [X] wylistowanie podstawowych informacji o wszystkich użytkownikach zapisanych w systemie (tylko ID oraz nazwa
   klienta)
 - [X] pobranie szczegółów dotyczących wybranego użytkownika (ID, imię, nazwisko, datę urodzenia, e-mail)
-- [ ] utworzenie nowego użytkownika
-- [ ] usunięcie użytkownika
-- [ ] wyszukiwanie użytkowników po e-mailu, bez rozróżniania wielkości liter, wyszukujące po fragmencie nazwy (zwracane
+- [X] utworzenie nowego użytkownika
+- [X] usunięcie użytkownika
+- [X] wyszukiwanie użytkowników po e-mailu, bez rozróżniania wielkości liter, wyszukujące po fragmencie nazwy (zwracane
   tylko
   ID oraz e-mail użytkowników)
 - [ ] wyszukiwanie użytkowników po wieku starszym niż zdefiniowany
-- [] aktualizowanie użytkowników w systemie (dowolnie wybrany atrybut)
+- [ ] aktualizowanie użytkowników w systemie (dowolnie wybrany atrybut)
 
 ### Wymagania techniczne
 
