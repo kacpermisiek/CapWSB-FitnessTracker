@@ -3,12 +3,12 @@ package com.capgemini.wsb.fitnesstracker.training.internal;
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import com.capgemini.wsb.fitnesstracker.training.api.TrainingProvider;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
+import com.capgemini.wsb.fitnesstracker.user.api.UserProvider;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.type.descriptor.DateTimeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TrainingServiceImpl implements TrainingProvider {
 
     private final TrainingRepository trainingRepository;
+    private final UserProvider userProvider;
 
     @Override
     public Optional<User> getTraining(final Long trainingId) {
@@ -49,7 +51,46 @@ public class TrainingServiceImpl implements TrainingProvider {
     }
 
     @Override
-    public Training addTraining(Training training) throws IllegalArgumentException{
-        return trainingRepository.save(training);
+    public Training addTraining(TrainingCreate training) throws IllegalArgumentException{
+        User user = userProvider.getUser(training.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Training trainingEntity = new Training(
+                user,
+                training.getStartTime(),
+                training.getEndTime(),
+                training.getActivityType(),
+                training.getDistance(),
+                training.getAverageSpeed()
+        );
+        return trainingRepository.save(trainingEntity);
+    }
+
+    @Override
+    public void updateTraining(Long trainingId, TrainingPatch trainingUpdateTo) {
+        log.info("Updating training with ID {}", trainingId);
+        Optional<Training> training = trainingRepository.findById(trainingId);
+        if (training.isEmpty()) {
+            throw new IllegalArgumentException("Training not found");
+        }
+        if (trainingUpdateTo.getUserId() != null) {
+            User user = userProvider.getUser(trainingUpdateTo.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+            training.get().setUser(user);
+        }
+        if (trainingUpdateTo.getStartTime() != null) {
+            training.get().setStartTime(trainingUpdateTo.getStartTime());
+        }
+        if (trainingUpdateTo.getEndTime() != null) {
+            training.get().setEndTime(trainingUpdateTo.getEndTime());
+        }
+        if (trainingUpdateTo.getActivityType() != null) {
+            training.get().setActivityType(trainingUpdateTo.getActivityType());
+        }
+        if (trainingUpdateTo.getDistance() != null) {
+            training.get().setDistance(trainingUpdateTo.getDistance());
+        }
+        if (trainingUpdateTo.getAverageSpeed() != null) {
+            training.get().setAverageSpeed(trainingUpdateTo.getAverageSpeed());
+        }
+        trainingRepository.save(training.get());
+
     }
 }

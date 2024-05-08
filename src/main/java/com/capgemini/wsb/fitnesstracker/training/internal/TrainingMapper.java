@@ -21,14 +21,14 @@ public class TrainingMapper {
         );
     }
 
-    public Training toTraining(TrainingTo trainingTo) {
-        return new Training(
-                userMapper.toEntity(trainingTo.getUser()),
-                trainingTo.getStartTime(),
-                trainingTo.getEndTime(),
-                trainingTo.getActivityType(),
-                trainingTo.getDistance(),
-                trainingTo.getAverageSpeed()
-        );
-    }
+//    public Training toTraining(TrainingTo trainingTo) {
+//        return new Training(
+//                userMapper.toEntity(trainingTo.getUser()),
+//                trainingTo.getStartTime(),
+//                trainingTo.getEndTime(),
+//                trainingTo.getActivityType(),
+//                trainingTo.getDistance(),
+//                trainingTo.getAverageSpeed()
+//        );
+//    }
 }

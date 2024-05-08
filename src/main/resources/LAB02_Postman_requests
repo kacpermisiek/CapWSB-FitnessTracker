@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "8a58d5b0-92e3-4aa4-84a0-d7025e2202a1",
+		"name": "Spring - training collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34771620"
+	},
+	"item": [
+		{
+			"name": "Get trainings list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/training",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"training"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new training",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 1,\r\n    \"startTime\": \"2024-05-08T16:39:08.578+00:00\",\r\n    \"endTime\": \"2024-05-08T16:39:08.578+00:00\",\r\n    \"activityType\": \"RUNNING\",\r\n    \"distance\": 10.1,\r\n    \"averageSpeed\": 12.1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/training",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"training"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user trainings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/training/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"training",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get trainings finished at",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/training/finishedAt/2024-01-19",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"training",
+						"finishedAt",
+						"2024-01-19"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get trainings by activity",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/training/activityType/CYCLING",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"training",
+						"activityType",
+						"CYCLING"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create training",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 1,\r\n    \"startTime\": \"2024-01-19T08:00:00\",\r\n    \"endTime\": \"2024-01-19T08:00:00\",\r\n    \"activityType\": \"RUNNING\",\r\n    \"distance\": 21.38,\r\n    \"averageSpeed\": 10.1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/training",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"training"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PatchTraining",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"distance\": 11.2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/training/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"training",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

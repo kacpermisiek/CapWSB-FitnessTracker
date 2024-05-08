@@ -11,15 +11,15 @@ import java.util.Date;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class TrainingTo {
-    private Long id;
-    private UserDto user;
-    private Date startTime;
-    private Date endTime;
-    private ActivityType activityType;
-    private double distance;
-    private double averageSpeed;
+    Long id;
+    UserDto user;
+    Date startTime;
+    Date endTime;
+    ActivityType activityType;
+    double distance;
+    double averageSpeed;
 }
 
 

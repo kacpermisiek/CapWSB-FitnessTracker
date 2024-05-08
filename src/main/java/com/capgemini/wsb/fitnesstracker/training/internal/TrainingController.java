@@ -3,14 +3,33 @@ package com.capgemini.wsb.fitnesstracker.training.internal;
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
 
 import static java.util.stream.Collectors.*;
 
+/**
+ * Controller for training management.
+ * <p>
+ *     Provides endpoints for managing trainings.
+ *     <ul>
+ *         <li>GET /v1/training - get all trainings</li>
+ *         <li>GET /v1/training/{userId} - get all trainings for user</li>
+ *         <li>GET /v1/training/finishedAt/{dateTo} - get all trainings finished at date</li>
+ *         <li>GET /v1/training/activityType/{activityType} - get all trainings by activity type</li>
+ *         <li>POST /v1/training - add training</li>
+ *         <li>PATCH /v1/training/{trainingId} - update training</li>
+ *     </ul>
+ * </p>
+ * @see TrainingServiceImpl
+ * @author Kacper Misiek
+ *
+ */
 @RestController
 @RequestMapping("/v1/training")
 @RequiredArgsConstructor
@@ -57,10 +76,25 @@ public class TrainingController {
 
     @PostMapping
     public ResponseEntity<TrainingTo> addTraining(@RequestBody TrainingCreate trainingCreateTo) {
-        TrainingTo training = new TrainingTo();
+        try {
+            Training training = trainingService.addTraining(trainingCreateTo);
+            return new ResponseEntity<>(trainingMapper.toTrainingTo(training), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong data format");
+        }
+    }
 
-        training.setUser()
-
-        Training training = trainingService.addTraining(trainingMapper.toTraining(trainingTo));
+    @PatchMapping("/{trainingId}")
+    public ResponseEntity<TrainingTo> updateTraining(@PathVariable Long trainingId, @RequestBody TrainingPatch trainingUpdateTo) {
+        try {
+            trainingService.updateTraining(trainingId, trainingUpdateTo);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Training or user not found");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong data format");
+        }
     }
 }

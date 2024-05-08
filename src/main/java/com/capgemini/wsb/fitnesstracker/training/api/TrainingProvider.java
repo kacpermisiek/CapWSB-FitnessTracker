@@ -1,6 +1,8 @@
 package com.capgemini.wsb.fitnesstracker.training.api;
 
 import com.capgemini.wsb.fitnesstracker.training.internal.ActivityType;
+import com.capgemini.wsb.fitnesstracker.training.internal.TrainingCreate;
+import com.capgemini.wsb.fitnesstracker.training.internal.TrainingPatch;
 import com.capgemini.wsb.fitnesstracker.training.internal.TrainingTo;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 
@@ -44,7 +46,27 @@ public interface TrainingProvider {
      */
     List<Training> getTrainingsFinishedAt(Date endTime);
 
+    /**
+     * Retrieves all trainings of a specific activity type.
+     *
+     * @param activityType type of the activity
+     * @return A list of all trainings of the specified activity type
+     */
     List<Training> getTrainingsByActivityType(ActivityType activityType);
 
-    Training addTraining(Training training);
+    /**
+     * Adds a new training.
+     *
+     * @param training training to be added
+     * @return The added training
+     */
+    Training addTraining(TrainingCreate training);
+
+    /**
+     * Updates a training.
+     *
+     * @param trainingId id of the training to be updated
+     * @param trainingUpdateTo updated training
+     */
+    void updateTraining(Long trainingId, TrainingPatch trainingUpdateTo);
 }
