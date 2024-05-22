@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.*;
 
@@ -24,6 +25,7 @@ import static java.util.stream.Collectors.*;
  *         <li>GET /v1/training/activityType/{activityType} - get all trainings by activity type</li>
  *         <li>POST /v1/training - add training</li>
  *         <li>PATCH /v1/training/{trainingId} - update training</li>
+ *         <li>PUT /v1/training/{trainingId} - update training</li>
  *     </ul>
  * </p>
  * @see TrainingServiceImpl
@@ -31,7 +33,7 @@ import static java.util.stream.Collectors.*;
  *
  */
 @RestController
-@RequestMapping("/v1/training")
+@RequestMapping("/v1/trainings")
 @RequiredArgsConstructor
 public class TrainingController {
     private final TrainingServiceImpl trainingService;
@@ -54,18 +56,18 @@ public class TrainingController {
         }
     }
 
-    @GetMapping("/finishedAt/{dateTo}")
+    @GetMapping("/finished/{dateTo}")
     public ResponseEntity<List<TrainingTo>> getTrainingsFinishedAt(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateTo) {
         try {
-            List<TrainingTo> trainings = trainingService.getTrainingsFinishedAt(dateTo).stream().map(trainingMapper::toTrainingTo).collect(toList());
+            List<TrainingTo> trainings = trainingService.getTrainingsFinishedAfter(dateTo).stream().map(trainingMapper::toTrainingTo).collect(toList());
             return ResponseEntity.ok(trainings);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping("/activityType/{activityType}")
-    public ResponseEntity<List<TrainingTo>> getTrainingsByActivityType(@PathVariable ActivityType activityType) {
+    @GetMapping("/activityType")
+    public ResponseEntity<List<TrainingTo>> getTrainingsByActivityType(@RequestParam ActivityType activityType) {
         try {
             List<TrainingTo> trainings = trainingService.getTrainingsByActivityType(activityType).stream().map(trainingMapper::toTrainingTo).collect(toList());
             return ResponseEntity.ok(trainings);
@@ -89,10 +91,22 @@ public class TrainingController {
     @PatchMapping("/{trainingId}")
     public ResponseEntity<TrainingTo> updateTraining(@PathVariable Long trainingId, @RequestBody TrainingPatch trainingUpdateTo) {
         try {
-            trainingService.updateTraining(trainingId, trainingUpdateTo);
+            trainingService.patchTraining(trainingId, trainingUpdateTo);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Training or user not found");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong data format");
+        }
+    }
+
+    @PutMapping("/{trainingId}")
+    public ResponseEntity<TrainingTo> updateTraining(@PathVariable Long trainingId, @RequestBody TrainingPut trainingUpdateTo) {
+        try {
+            Training training = trainingService.updateTraining(trainingId, trainingUpdateTo);
+            return new ResponseEntity<>(trainingMapper.toTrainingTo(training), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong data format");
         }

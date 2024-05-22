@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,7 @@ public class TrainingServiceImpl implements TrainingProvider {
     private final UserProvider userProvider;
 
     @Override
-    public Optional<User> getTraining(final Long trainingId) {
+    public Optional<Training> getTraining(final Long trainingId) {
         throw new UnsupportedOperationException("Not finished yet");
     }
 
@@ -38,10 +37,9 @@ public class TrainingServiceImpl implements TrainingProvider {
     }
 
     @Override
-    public List<Training> getTrainingsFinishedAt(Date endTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    public List<Training> getTrainingsFinishedAfter(Date endTime) {
         return trainingRepository.findAll().stream()
-                .filter(training -> sdf.format(training.getEndTime()).equals(sdf.format(endTime)))
+                .filter(training -> training.getEndTime().after(endTime))
                 .collect(Collectors.toList());
     }
 
@@ -65,7 +63,7 @@ public class TrainingServiceImpl implements TrainingProvider {
     }
 
     @Override
-    public void updateTraining(Long trainingId, TrainingPatch trainingUpdateTo) {
+    public void patchTraining(Long trainingId, TrainingPatch trainingUpdateTo) {
         log.info("Updating training with ID {}", trainingId);
         Optional<Training> training = trainingRepository.findById(trainingId);
         if (training.isEmpty()) {
@@ -92,5 +90,23 @@ public class TrainingServiceImpl implements TrainingProvider {
         }
         trainingRepository.save(training.get());
 
+    }
+
+    @Override
+    public Training updateTraining(Long trainingId, TrainingPut trainingUpdateTo) {
+        log.info("Updating training with ID {}", trainingId);
+        Optional<Training> training = trainingRepository.findById(trainingId);
+        System.out.println(training);
+        if (training.isEmpty()) {
+            throw new IllegalArgumentException("Training not found");
+        }
+        User user = userProvider.getUser(trainingUpdateTo.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        training.get().setUser(user);
+        training.get().setStartTime(trainingUpdateTo.getStartTime());
+        training.get().setEndTime(trainingUpdateTo.getEndTime());
+        training.get().setActivityType(trainingUpdateTo.getActivityType());
+        training.get().setDistance(trainingUpdateTo.getDistance());
+        training.get().setAverageSpeed(trainingUpdateTo.getAverageSpeed());
+        return trainingRepository.save(training.get());
     }
 }

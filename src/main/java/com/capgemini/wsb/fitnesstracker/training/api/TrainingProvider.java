@@ -3,10 +3,9 @@ package com.capgemini.wsb.fitnesstracker.training.api;
 import com.capgemini.wsb.fitnesstracker.training.internal.ActivityType;
 import com.capgemini.wsb.fitnesstracker.training.internal.TrainingCreate;
 import com.capgemini.wsb.fitnesstracker.training.internal.TrainingPatch;
-import com.capgemini.wsb.fitnesstracker.training.internal.TrainingTo;
+import com.capgemini.wsb.fitnesstracker.training.internal.TrainingPut;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,7 @@ public interface TrainingProvider {
      * @param trainingId id of the training to be searched
      * @return An {@link Optional} containing the located Training, or {@link Optional#empty()} if not found
      */
-    Optional<User> getTraining(Long trainingId);
+    Optional<Training> getTraining(Long trainingId);
 
     /**
      * Retrieves all trainings.
@@ -39,12 +38,12 @@ public interface TrainingProvider {
 
 
     /**
-     * Retrieves all trainings that finished at a specific time.
+     * Retrieves all trainings that finished after a specific time.
      *
      * @param endTime time when the training finished
-     * @return A list of all trainings that finished at the specified time
+     * @return A list of all trainings that finished after the specified time
      */
-    List<Training> getTrainingsFinishedAt(Date endTime);
+    List<Training> getTrainingsFinishedAfter(Date endTime);
 
     /**
      * Retrieves all trainings of a specific activity type.
@@ -68,5 +67,7 @@ public interface TrainingProvider {
      * @param trainingId id of the training to be updated
      * @param trainingUpdateTo updated training
      */
-    void updateTraining(Long trainingId, TrainingPatch trainingUpdateTo);
+    void patchTraining(Long trainingId, TrainingPatch trainingUpdateTo);
+
+    Training updateTraining(Long trainingId, TrainingPut trainingUpdateTo);
 }

@@ -1,5 +1,6 @@
 package com.capgemini.wsb.fitnesstracker.user.api;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +35,9 @@ public interface UserProvider {
     /**
      * Retrieves all users older than given age.
      *
-     * @param age The age of the user to be searched
+     * @param olderThanDate The date to compare the birthdate with
      * @return List of users older than given age
      */
-    List<User> finUsersOlderThan(int age);
+    List<User> finUsersOlderThan(LocalDate olderThanDate);
 
 }

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +60,8 @@ class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
-    public List<User> finUsersOlderThan(int age) {
-        return userRepository.findOlderThan(age);
+    public List<User> finUsersOlderThan(LocalDate olderThanDate) {
+        return userRepository.findOlderThan(olderThanDate);
     }
 
     public void patchUser(Long userId,  UserPatchDto userPatch) throws IllegalArgumentException{
@@ -81,6 +82,19 @@ class UserServiceImpl implements UserService, UserProvider {
         if (userPatch.email() != null) {
             user.get().setEmail(userPatch.email());
         }
+        userRepository.save(user.get());
+    }
+
+    public void putUser(Long userId, UserPutDto putDto) throws IllegalArgumentException{
+        log.info("Updating User with ID {}", userId);
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        user.get().setFirstName(putDto.firstName());
+        user.get().setLastName(putDto.lastName());
+        user.get().setBirthdate(putDto.birthdate());
+        user.get().setEmail(putDto.email());
         userRepository.save(user.get());
     }
 

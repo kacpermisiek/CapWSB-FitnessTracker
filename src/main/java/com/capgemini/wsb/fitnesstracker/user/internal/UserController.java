@@ -2,14 +2,12 @@ package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,10 +32,18 @@ class UserController {
     private final UserMapper userMapper;
 
     @GetMapping
-    public List<UserIdAndNameDto> getAllUsers() {
+    public List<ListUserDto> getAllUsers() {
         return userService.findAllUsers()
                           .stream()
-                          .map(userMapper::toIdAndNameDto)
+                          .map(userMapper::toListUserDto)
+                          .toList();
+    }
+
+    @GetMapping("/simple")
+    public List<SimpleUserDto> getAllSimpleUsers() {
+        return userService.findAllUsers()
+                          .stream()
+                          .map(userMapper::toSimpleUserDto)
                           .toList();
     }
 
@@ -73,17 +79,17 @@ class UserController {
         }
     }
 
-    @GetMapping("/email/{email}")
-    public List<UserIdAndEmailDto> getUsersByEmail(@PathVariable String email) {
+    @GetMapping("/email")
+    public List<UserIdAndEmailDto> getUsersByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email)
                           .stream()
                           .map(userMapper::toIdAndEmailDto)
                           .toList();
     }
 
-    @GetMapping("/older/{age}")
-    public List<UserDto> getUsersOlderThan(@PathVariable int age) {
-        return userService.finUsersOlderThan(age)
+    @GetMapping("/older/{olderThanDate}")
+    public List<UserDto> getUsersOlderThan(@PathVariable LocalDate olderThanDate) {
+        return userService.finUsersOlderThan(olderThanDate)
                           .stream()
                           .map(userMapper::toDto)
                           .toList();
@@ -95,6 +101,20 @@ class UserController {
             userService.patchUser(userId, userPatchDto);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<Void> putUser(@PathVariable Long userId, @RequestBody UserPutDto userPutDto) {
+        try {
+            userService.putUser(userId, userPutDto);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         catch (Exception e) {

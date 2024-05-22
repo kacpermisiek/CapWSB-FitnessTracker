@@ -41,13 +41,12 @@ interface UserRepository extends JpaRepository<User, Long> {
     /**
      * Query searching users older than given age.
      *
-     * @param age The age of the user to be searched
+     * @param olderThanDate The date to compare the birthdate with
      * @return List of users older than given age
      */
-    default List<User> findOlderThan(int age) {
-        LocalDate cutOffDate = LocalDate.now().minusYears(age);
+    default List<User> findOlderThan(LocalDate olderThanDate) {
         return findAll().stream()
-                .filter(user -> user.getBirthdate().isBefore(cutOffDate))
+                .filter(user -> user.getBirthdate().isBefore(olderThanDate))
                 .collect(Collectors.toList());
     }
 }

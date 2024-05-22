@@ -22,3 +22,4 @@ public class TrainingPatch {
     @Nullable private Double distance;
     @Nullable private Double averageSpeed;
 }
+

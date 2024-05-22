@@ -14,10 +14,13 @@ public class UserMapper {
                            user.getEmail());
     }
 
-    UserIdAndNameDto toIdAndNameDto(User user) {
-        return new UserIdAndNameDto(user.getId(),
-                                    user.getFirstName(),
-                                    user.getLastName());
+    ListUserDto toListUserDto(User user) {
+        return new ListUserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getBirthdate());
+    }
+
+
+    SimpleUserDto toSimpleUserDto(User user) {
+        return new SimpleUserDto(user.getId(), user.getFirstName(), user.getLastName());
     }
 
     UserIdAndEmailDto toIdAndEmailDto(User user) {

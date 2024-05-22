@@ -103,7 +103,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/v1/users/email/DOMAIN",
+					"raw": "http://localhost:8080/v1/users/email?email=DOMAIN.com",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -112,8 +112,13 @@
 					"path": [
 						"v1",
 						"users",
-						"email",
-						"DOMAIN"
+						"email"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "DOMAIN.com"
+						}
 					]
 				}
 			},
@@ -125,7 +130,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/v1/users/older/55",
+					"raw": "http://localhost:8080/v1/users/older/2000-08-11",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -135,7 +140,7 @@
 						"v1",
 						"users",
 						"older",
-						"55"
+						"2000-08-11"
 					]
 				}
 			},
