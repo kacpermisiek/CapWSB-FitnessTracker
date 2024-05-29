@@ -159,7 +159,6 @@ class TrainingApiIntegrationTest extends IntegrationTestBase {
     void shouldUpdateTraining_whenUpdatingTraining() throws Exception {
 
         User user1 = existingUser(generateClient());
-        User user2 = existingUser(generateClient());
         Training training1 = persistTraining(generateTrainingWithActivityType(user1, ActivityType.RUNNING));
         String requestBody = """
                 {

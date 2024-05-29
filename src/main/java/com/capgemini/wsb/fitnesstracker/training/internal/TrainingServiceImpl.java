@@ -111,4 +111,9 @@ public class TrainingServiceImpl implements TrainingProvider {
         training.get().setAverageSpeed(trainingUpdateTo.getAverageSpeed());
         return trainingRepository.save(training.get());
     }
+
+    @Override
+    public List<Training> findAllForUser(Long id) {
+        return trainingRepository.findByUserId(id);
+    }
 }

@@ -70,4 +70,11 @@ public interface TrainingProvider {
     void patchTraining(Long trainingId, TrainingPatch trainingUpdateTo);
 
     Training updateTraining(Long trainingId, TrainingPut trainingUpdateTo);
+
+    /**
+     * Returns all trainings for a specific user.
+     * @param id id of the user
+     * @return A list of all trainings for the user
+     */
+    List<Training> findAllForUser(Long id);
 }

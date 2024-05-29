@@ -10,6 +10,18 @@ spring:
     console:
       enabled: true
 
+  mail:
+    host: "sandbox.smtp.mailtrap.io"
+    port: 2525
+    username: "8564ef5155fdd8"
+    password: "481f402d195ac5"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 server:
   error:
     include-message: always
