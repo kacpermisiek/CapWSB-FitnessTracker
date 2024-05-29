@@ -95,6 +95,8 @@ public class TrainingServiceImpl implements TrainingProvider {
     @Override
     public Training updateTraining(Long trainingId, TrainingPut trainingUpdateTo) {
         log.info("Updating training with ID {}", trainingId);
+        log.info("Num of trainings: {}", trainingRepository.count());
+        log.info("Num of users: {}", userProvider.getNumOfUsers());
         Optional<Training> training = trainingRepository.findById(trainingId);
         System.out.println(training);
         if (training.isEmpty()) {

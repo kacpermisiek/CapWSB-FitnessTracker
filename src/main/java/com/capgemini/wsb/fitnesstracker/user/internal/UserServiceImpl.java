@@ -98,4 +98,8 @@ class UserServiceImpl implements UserService, UserProvider {
         userRepository.save(user.get());
     }
 
+    public int getNumOfUsers() {
+        return userRepository.findAll().size();
+    }
+
 }

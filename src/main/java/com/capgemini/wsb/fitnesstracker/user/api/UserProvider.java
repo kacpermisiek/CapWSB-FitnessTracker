@@ -40,4 +40,5 @@ public interface UserProvider {
      */
     List<User> finUsersOlderThan(LocalDate olderThanDate);
 
+    int getNumOfUsers();
 }
