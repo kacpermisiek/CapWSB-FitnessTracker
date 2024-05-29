@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @EnableScheduling
 @Service
@@ -27,7 +26,10 @@ public class ReportService {
     private final UserProvider userProvider;
     private final TrainingProvider trainingProvider;
 
-    // Emails being sent every Sunday at midnight
+    // Scheduler for tests purposes:
+    // @Scheduled(initialDelay = 1000, fixedRate = 5000)
+
+    //  Emails being sent every Sunday at midnight
     @Scheduled(cron = "0 0 0 ? * SUN")
     public void sendEmailReports() {
         log.info("Creating report");
@@ -47,35 +49,35 @@ public class ReportService {
                 training -> training.getStartTime().after(startOfLastWeek) && training.getStartTime().before(yesterday)
         ).toList();
 
+        int numOfAllTrainings = trainings.size();
+
         final SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(customerEmail);
         email.setSubject(ReportTitle);
-        email.setText(getEmailText(lastWeekTrainings));
+        email.setText(getEmailText(lastWeekTrainings, numOfAllTrainings, customerEmail));
         return email;
     }
 
-    private String getEmailText(List<Training> lastWeekTrainings) {
+    private String getEmailText(List<Training> lastWeekTrainings, int numOfAllTrainings, String customerEmail) {
         final StringBuilder builder = new StringBuilder("""
-                Hello,
-                You had %s trainings last week,
+                Hello %s,
+                You had %s trainings last week, and %s trainings in total.
                 Below you can find detailed rundown of your trainings last week:
                 ----
-                """.formatted(lastWeekTrainings.size()));
-        lastWeekTrainings.forEach(training -> {
-            builder.append("""
-                %s - %s
-                Training type: %s
-                distance: %s
-                average speed: %s
-                
-                ----
-                """.formatted(training.getStartTime(),
-                    training.getEndTime() == null ? "-" : training.getEndTime(),
-                    training.getActivityType(),
-                    training.getDistance(),
-                    training.getAverageSpeed()
-            ));
-        });
+                """.formatted(customerEmail, lastWeekTrainings.size(), numOfAllTrainings));
+        lastWeekTrainings.forEach(training -> builder.append("""
+            %s - %s
+            Training type: %s
+            distance: %s
+            average speed: %s
+            
+            ----
+            """.formatted(training.getStartTime(),
+                training.getEndTime() == null ? "-" : training.getEndTime(),
+                training.getActivityType(),
+                training.getDistance(),
+                training.getAverageSpeed()
+        )));
         log.info(builder.toString());
         return builder.toString();
     }
