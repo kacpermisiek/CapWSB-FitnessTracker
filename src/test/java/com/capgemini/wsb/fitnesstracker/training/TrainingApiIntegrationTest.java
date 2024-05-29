@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -171,16 +170,15 @@ class TrainingApiIntegrationTest extends IntegrationTestBase {
                 "distance": 0.0,
                 "averageSpeed": 0.0
                 }
-                """
-                .formatted(user2.getId());
-
+                """.formatted(user1.getId());
         mockMvc.perform(put("/v1/trainings/{trainingId}", training1.getId()).contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user.id").value(user2.getId()))
-                .andExpect(jsonPath("$.user.firstName").value(user2.getFirstName()))
-                .andExpect(jsonPath("$.user.lastName").value(user2.getLastName()))
-                .andExpect(jsonPath("$.user.email").value(user2.getEmail()))
+                .andExpect(jsonPath("$.user.id").value(user1.getId()))
+                .andExpect(jsonPath("$.user.firstName").value(user1.getFirstName()))
+                .andExpect(jsonPath("$.user.lastName").value(user1.getLastName()))
+                .andExpect(jsonPath("$.user.email").value(user1.getEmail()))
+                .andExpect(jsonPath("$.activityType").value(ActivityType.TENNIS.toString()))
                 .andExpect(jsonPath("$.distance").value(0.0))
                 .andExpect(jsonPath("$.averageSpeed").value(0.0));
     }
